@@ -31,7 +31,7 @@ public:
 private slots:
     void mousePressEvent(QMouseEvent *event) override;
     void on_start_btn_clicked();
-
+    void clear_gui();
     void on_go_clicked();
     void bfs();
     void dfs();

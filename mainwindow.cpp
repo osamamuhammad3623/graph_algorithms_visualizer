@@ -35,15 +35,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
 void MainWindow::on_start_btn_clicked()
 {
-    // reseting maps, used data structures, etc..
-    map_squares.clear();
-    std::queue<QGraphicsRectItem *> empty_queue{};
-    std::stack<QGraphicsRectItem *> empty_stack{};
-    bfs_queue.swap(empty_queue);
-    dfs_stack.swap(empty_stack);
-    ui->statusbar->showMessage("");
-    target_selected=false;
-
+    clear_gui();
     int map_height = ui->graphicsView->height();
     int map_width = ui->graphicsView->width();
 
@@ -62,6 +54,18 @@ void MainWindow::on_start_btn_clicked()
 
     map_squares[0][0]->setBrush(Qt::blue);
     ui->graphicsView->setScene(&scene);
+}
+
+void MainWindow::clear_gui()
+{
+    // reseting maps, used data structures, etc..
+    map_squares.clear();
+    std::queue<QGraphicsRectItem *> empty_queue{};
+    std::stack<QGraphicsRectItem *> empty_stack{};
+    bfs_queue.swap(empty_queue);
+    dfs_stack.swap(empty_stack);
+    ui->statusbar->showMessage("");
+    target_selected=false;
 }
 
 void delay(int millisecondsToWait)
