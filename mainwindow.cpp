@@ -29,6 +29,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         }else if(event->button() == Qt::RightButton && !target_selected){
             map_squares[row][col]->setBrush(Qt::green);
             target_selected=true;
+            target_square = map_squares[row][col];
         }
     }
 }
@@ -66,6 +67,7 @@ void MainWindow::clear_gui()
     dfs_stack.swap(empty_stack);
     ui->statusbar->showMessage("");
     target_selected=false;
+    target_square = nullptr;
 }
 
 void delay(int millisecondsToWait)
@@ -84,6 +86,8 @@ void MainWindow::on_go_clicked()
 
     }else if (ui->algorithm->currentText() == "DFS"){
         dfs();
+    }else if  (ui->algorithm->currentText() == "A*"){
+        A_star();
     }
 
     ui->statusbar->showMessage("Completed!");
@@ -94,64 +98,134 @@ void MainWindow::bfs()
     bfs_queue.push(map_squares[0][0]);
     bool finish = false;
 
-    while(!finish){
-        // add neighbours
-        for(auto nei: get_neighbours(bfs_queue.front())){
-            int row = nei->rect().y() /square_size;
-            int col = nei->rect().x() /square_size;
+    // Store the predecessor of each node for path reconstruction
+    std::unordered_map<QGraphicsRectItem*, QGraphicsRectItem*> came_from;
 
-            if(map_squares[row][col]->brush() == Qt::black){
+    while (!finish) {
+        // add neighbours
+        for (auto nei : get_neighbours(bfs_queue.front())) {
+            int row = nei->rect().y() / square_size;
+            int col = nei->rect().x() / square_size;
+
+            if (map_squares[row][col]->brush() == Qt::black) {
                 continue;
-            }
-            else if (map_squares[row][col]->brush() == Qt::green){
-                finish|=true;
+            } else if (map_squares[row][col]->brush() == Qt::green) {
+                finish |= true;
+                came_from[nei] = bfs_queue.front();  // Record the predecessor
                 break;
-            }
-            else if(map_squares[row][col]->brush() == Qt::red){
+            } else if (map_squares[row][col]->brush() == Qt::red) {
                 map_squares[row][col]->setBrush(Qt::lightGray);
                 bfs_queue.push(nei);
+                came_from[nei] = bfs_queue.front();  // Record the predecessor
             }
         }
 
         bfs_queue.pop();
-
         finish |= bfs_queue.empty();
-
         delay(STEP_DELAY);
     }
+
+    reconstruct_path(came_from, target_square);
 }
+
 
 void MainWindow::dfs()
 {
     dfs_stack.push(map_squares[0][0]);
     bool finish = false;
 
+    // Store the predecessor of each node for path reconstruction
+    std::unordered_map<QGraphicsRectItem*, QGraphicsRectItem*> came_from;
+
     while (!finish) {
-        QGraphicsRectItem * current = dfs_stack.top();
-        map_squares[current->rect().y()/square_size][current->rect().x()/square_size]->setBrush(Qt::lightGray);
+        QGraphicsRectItem* current = dfs_stack.top();
+        map_squares[current->rect().y() / square_size][current->rect().x() / square_size]->setBrush(Qt::lightGray);
         dfs_stack.pop();
 
         // Add neighbours to the stack
-        for (auto nei: get_neighbours(current)) {
+        for (auto nei : get_neighbours(current)) {
             int row = nei->rect().y() / square_size;
             int col = nei->rect().x() / square_size;
 
             if (map_squares[row][col]->brush() == Qt::black) {
                 continue;
-            }
-            else if (map_squares[row][col]->brush() == Qt::green) {
+            } else if (map_squares[row][col]->brush() == Qt::green) {
                 finish = true;
+                came_from[nei] = current;  // Record the predecessor
                 break;
-            }
-            else if (map_squares[row][col]->brush() == Qt::red) {
+            } else if (map_squares[row][col]->brush() == Qt::red) {
                 dfs_stack.push(nei);
+                came_from[nei] = current;  // Record the predecessor
             }
         }
 
         finish |= dfs_stack.empty();
+        delay(STEP_DELAY);
+    }
+
+    reconstruct_path(came_from, target_square);
+}
+
+void MainWindow::A_star()
+{
+    // Initialize the start and goal positions
+    QGraphicsRectItem* start = map_squares[0][0];  // Example start position
+    QGraphicsRectItem* goal{target_square};
+
+
+    // The std::priority_queue is used to process nodes in the order of their f-cost,
+    //      which ensures that we explore the least costly paths first.
+    std::priority_queue<Node, std::vector<Node>, std::greater<Node>> open_list;
+    std::unordered_map<QGraphicsRectItem*, QGraphicsRectItem*> came_from;  // For path reconstruction
+    std::unordered_map<QGraphicsRectItem*, int> g_cost_map;  // Store g_cost for each node
+
+    // Initialize the start node
+    open_list.push(Node{start, 0, calculate_heuristic(start, goal)});
+    g_cost_map[start] = 0;
+
+    bool finish = false;
+
+    while (!open_list.empty() && !finish) {
+        // Get the node with the lowest f_cost
+        Node current_node = open_list.top();
+        open_list.pop();
+
+        QGraphicsRectItem* current = current_node.item;
+        int row = current->rect().y() / square_size;
+        int col = current->rect().x() / square_size;
+
+        // Mark the current node as visited
+        map_squares[row][col]->setBrush(Qt::lightGray);
+
+        if (current == goal) {
+            finish = true;
+            break;
+        }
+
+        // Process the neighbors of the current node
+        for (auto nei: get_neighbours(current)) {
+            row = nei->rect().y() / square_size;
+            col = nei->rect().x() / square_size;
+
+            if (map_squares[row][col]->brush() == Qt::black) {  // Skip blocked nodes
+                continue;
+            }
+
+            int tentative_g_cost = g_cost_map[current] + 1;  // Assuming uniform cost for simplicity
+            int h_cost = calculate_heuristic(nei, goal);
+
+            // If this path is better, or the neighbor is not in the open list yet
+            if (g_cost_map.find(nei) == g_cost_map.end() || tentative_g_cost < g_cost_map[nei]) {
+                g_cost_map[nei] = tentative_g_cost;
+                open_list.push(Node{nei, tentative_g_cost, h_cost});
+                came_from[nei] = current;  // Store the path for reconstruction
+            }
+        }
 
         delay(STEP_DELAY);
     }
+
+    reconstruct_path(came_from, goal);
 }
 
 
@@ -182,5 +256,26 @@ std::vector<QGraphicsRectItem *> MainWindow::get_neighbours(QGraphicsRectItem *c
     }
 
     return result;
+}
+
+void MainWindow::reconstruct_path(std::unordered_map<QGraphicsRectItem *, QGraphicsRectItem *> came_from_map, QGraphicsRectItem *target)
+{
+    QGraphicsRectItem* current = target;
+    while (current != map_squares[0][0]) {
+        current->setBrush(Qt::blue);  // Mark the path (blue for the final path)
+        current = came_from_map[current];
+    }
+    map_squares[0][0]->setBrush(Qt::blue);  // Mark the start node
+}
+
+int MainWindow::calculate_heuristic(QGraphicsRectItem *current, QGraphicsRectItem *goal)
+{
+    int current_row = current->rect().y() / square_size;
+    int current_col = current->rect().x() / square_size;
+    int goal_row = goal->rect().y() / square_size;
+    int goal_col = goal->rect().x() / square_size;
+
+    // Manhattan distance heuristic
+    return std::abs(current_row - goal_row) + std::abs(current_col - goal_col);
 }
 

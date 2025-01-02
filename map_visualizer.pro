@@ -13,6 +13,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    A_Star_Node.h \
     mainwindow.h
 
 FORMS += \

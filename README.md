@@ -5,19 +5,23 @@
 - Adding obstacles by pressing left click on squares.
 - Adding the target square by pressing right click on a square.
 - Ability to reset the visualization and start with different algorithm/target/obstacles.
+- Reconstruct the path in blue when target square is found.
 
 ## Supported Graph algorithms
 - BFS
 - DFS
+- A*
 
 ## Preview
 check YouTube video: https://youtu.be/5fRgi-NXamE?si=FYzD_LM0E5M3XVew
 
 ## Screenshots
-![BFS](image.png)
+![A*](image.png)
+![A*](image2.png)
 
 ## Tools
 - Qt C++ 6.7.0
 
 ## To-Do
 - Support more graph algorithms!
+- Use Strategy design pattern for different graph algorithms.
