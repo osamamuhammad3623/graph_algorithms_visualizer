@@ -22,8 +22,8 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
     QPointF scenePos = ui->graphicsView->mapToScene(event->pos());
 
     // Calculate the row and column of the clicked square
-    int col = static_cast<int>(scenePos.x()) / square_size;
-    int row = static_cast<int>(scenePos.y()) / square_size;
+    int col = static_cast<int>(scenePos.x()) / SQUARE_SIZE;
+    int row = static_cast<int>(scenePos.y()) / SQUARE_SIZE;
     //ui->statusbar->showMessage(QString("Row: %1, Column: %2").arg(row).arg(col));
 
     if(row < map_squares.size() && col < map_squares[0].size()){
@@ -45,10 +45,10 @@ void MainWindow::on_start_btn_clicked()
 
     scene.setSceneRect(0,0, map_width, map_height);
 
-    for (int row = 0; row < (map_height/square_size); ++row) {
+    for (int row = 0; row < (map_height/SQUARE_SIZE); ++row) {
         std::vector<QGraphicsRectItem*> current_row_sqaures;
-        for (int col = 0; col < (map_width/square_size); ++col) {
-            QGraphicsRectItem *square = new QGraphicsRectItem(col*square_size, row*square_size , square_size, square_size);
+        for (int col = 0; col < (map_width/SQUARE_SIZE); ++col) {
+            QGraphicsRectItem *square = new QGraphicsRectItem(col*SQUARE_SIZE, row*SQUARE_SIZE , SQUARE_SIZE, SQUARE_SIZE);
             square->setBrush(Qt::red);  // Set color for the squares
             scene.addItem(square);
             current_row_sqaures.push_back(square);
@@ -137,24 +137,24 @@ int MainWindow::bfs()
 
     // Store the predecessor of each node for path reconstruction
     std::unordered_map<QGraphicsRectItem*, QGraphicsRectItem*> came_from;
+    QGraphicsRectItem *target{nullptr};
 
     while ((!finish) && (!stop_btn_clicked)) {
         // add neighbours
         for (auto nei : get_neighbours(bfs_queue.front())) {
-            int row = nei->rect().y() / square_size;
-            int col = nei->rect().x() / square_size;
+            int row = nei->rect().y() / SQUARE_SIZE;
+            int col = nei->rect().x() / SQUARE_SIZE;
 
             if (map_squares[row][col]->brush() == Qt::black) {
                 continue;
             } else if (map_squares[row][col]->brush() == Qt::green) {
                 finish |= true;
-                came_from[nei] = bfs_queue.front();  // Record the predecessor
                 break;
             } else if (map_squares[row][col]->brush() == Qt::red) {
                 map_squares[row][col]->setBrush(Qt::lightGray);
                 bfs_queue.push(nei);
-                came_from[nei] = bfs_queue.front();  // Record the predecessor
             }
+            came_from[nei] = bfs_queue.front();  // Record the predecessor
         }
 
         bfs_queue.pop();
@@ -181,24 +181,23 @@ int MainWindow::dfs()
 
     while ((!finish) && (!stop_btn_clicked)) {
         QGraphicsRectItem* current = dfs_stack.top();
-        map_squares[current->rect().y() / square_size][current->rect().x() / square_size]->setBrush(Qt::lightGray);
+        map_squares[current->rect().y() / SQUARE_SIZE][current->rect().x() / SQUARE_SIZE]->setBrush(Qt::lightGray);
         dfs_stack.pop();
 
         // Add neighbours to the stack
         for (auto nei : get_neighbours(current)) {
-            int row = nei->rect().y() / square_size;
-            int col = nei->rect().x() / square_size;
+            int row = nei->rect().y() / SQUARE_SIZE;
+            int col = nei->rect().x() / SQUARE_SIZE;
 
             if (map_squares[row][col]->brush() == Qt::black) {
                 continue;
             } else if (map_squares[row][col]->brush() == Qt::green) {
                 finish = true;
-                came_from[nei] = current;  // Record the predecessor
                 break;
             } else if (map_squares[row][col]->brush() == Qt::red) {
                 dfs_stack.push(nei);
-                came_from[nei] = current;  // Record the predecessor
             }
+            came_from[nei] = current;  // Record the predecessor
         }
 
         finish |= dfs_stack.empty();
@@ -217,7 +216,6 @@ int MainWindow::A_star(bool calculate_heuristics)
     // Initialize the start and goal positions
     QGraphicsRectItem* start = map_squares[0][0];  // Example start position
     int steps=0;
-
 
     // The std::priority_queue is used to process nodes in the order of their f-cost,
     //      which ensures that we explore the least costly paths first.
@@ -242,8 +240,8 @@ int MainWindow::A_star(bool calculate_heuristics)
         open_list.pop();
 
         QGraphicsRectItem* current = current_node.item;
-        int row = current->rect().y() / square_size;
-        int col = current->rect().x() / square_size;
+        int row = current->rect().y() / SQUARE_SIZE;
+        int col = current->rect().x() / SQUARE_SIZE;
 
         // Mark the current node as visited
         map_squares[row][col]->setBrush(Qt::lightGray);
@@ -255,8 +253,8 @@ int MainWindow::A_star(bool calculate_heuristics)
 
         // Process the neighbors of the current node
         for (auto nei: get_neighbours(current)) {
-            row = nei->rect().y() / square_size;
-            col = nei->rect().x() / square_size;
+            row = nei->rect().y() / SQUARE_SIZE;
+            col = nei->rect().x() / SQUARE_SIZE;
 
             if (map_squares[row][col]->brush() == Qt::black) {  // Skip blocked nodes
                 continue;
@@ -284,13 +282,14 @@ int MainWindow::A_star(bool calculate_heuristics)
     if(finish){
         reconstruct_path(came_from);
     }
+
     return steps;
 }
 
 std::vector<QGraphicsRectItem *> MainWindow::get_neighbours(QGraphicsRectItem *current_square)
 {
-    int row = current_square->rect().y() /square_size;
-    int col = current_square->rect().x() /square_size;
+    int row = current_square->rect().y() /SQUARE_SIZE;
+    int col = current_square->rect().x() /SQUARE_SIZE;
     std::vector<QGraphicsRectItem *> result{};
 
     // top right neighbour
@@ -343,15 +342,15 @@ void MainWindow::reconstruct_path(std::unordered_map<QGraphicsRectItem *, QGraph
         current->setBrush(Qt::blue);  // Mark the path (blue for the final path)
         current = came_from_map[current];
     }
+    map_squares[0][0]->setBrush(Qt::blue);
 }
 
 int MainWindow::calculate_heuristic(QGraphicsRectItem *current, QGraphicsRectItem *goal)
 {
-    int current_row = current->rect().y() / square_size;
-    int current_col = current->rect().x() / square_size;
-    int goal_row = goal->rect().y() / square_size;
-    int goal_col = goal->rect().x() / square_size;
-
+    int current_row = current->rect().y() / SQUARE_SIZE;
+    int current_col = current->rect().x() / SQUARE_SIZE;
+    int goal_row = goal->rect().y() / SQUARE_SIZE;
+    int goal_col = goal->rect().x() / SQUARE_SIZE;
     // Manhattan distance heuristic
     return std::abs(current_row - goal_row) + std::abs(current_col - goal_col);
 }
