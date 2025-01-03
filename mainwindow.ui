@@ -15,6 +15,20 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="2" column="1">
+     <widget class="QPushButton" name="go">
+      <property name="text">
+       <string>Visualize</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="start_btn">
+      <property name="text">
+       <string>Reset All</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="1">
      <widget class="QComboBox" name="algorithm">
       <property name="layoutDirection">
@@ -37,20 +51,20 @@
       </item>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="start_btn">
+    <item row="0" column="0" rowspan="8">
+     <widget class="QGraphicsView" name="graphicsView"/>
+    </item>
+    <item row="3" column="1">
+     <widget class="QPushButton" name="reset_algorithm">
       <property name="text">
-       <string>Reset</string>
+       <string>Reset Algorithm Only</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="0" rowspan="5">
-     <widget class="QGraphicsView" name="graphicsView"/>
-    </item>
-    <item row="2" column="1">
-     <widget class="QPushButton" name="go">
+    <item row="4" column="1">
+     <widget class="QLabel" name="steps_label">
       <property name="text">
-       <string>Visualize</string>
+       <string/>
       </property>
      </widget>
     </item>

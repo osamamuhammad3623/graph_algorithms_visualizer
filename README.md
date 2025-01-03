@@ -6,11 +6,12 @@
 - Adding the target square by pressing right click on a square.
 - Ability to reset the visualization and start with different algorithm/target/obstacles.
 - Reconstruct the path in blue when target square is found.
+- Ability to clear only algorithm visualization and keep obstacles.
 
 ## Supported Graph algorithms
 - BFS
 - DFS
-- A*
+- A* (AI generated)
 
 ## Preview
 check YouTube video: https://youtu.be/5fRgi-NXamE?si=FYzD_LM0E5M3XVew
@@ -25,3 +26,4 @@ check YouTube video: https://youtu.be/5fRgi-NXamE?si=FYzD_LM0E5M3XVew
 ## To-Do
 - Support more graph algorithms!
 - Use Strategy design pattern for different graph algorithms.
+- Add diagonal movement
