@@ -6,6 +6,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    // call view the map after setup
+    // [error root cause when just on_start_btn_clicked(): attempt to use ui->graphicsView in the constructor before it has been fully initialized and set up]
+    QTimer::singleShot(0, this, SLOT(on_start_btn_clicked()));
 }
 
 MainWindow::~MainWindow()
@@ -302,7 +305,6 @@ void MainWindow::reconstruct_path(std::unordered_map<QGraphicsRectItem *, QGraph
         current->setBrush(Qt::blue);  // Mark the path (blue for the final path)
         current = came_from_map[current];
     }
-    map_squares[0][0]->setBrush(Qt::blue);  // Mark the start node
 }
 
 int MainWindow::calculate_heuristic(QGraphicsRectItem *current, QGraphicsRectItem *goal)

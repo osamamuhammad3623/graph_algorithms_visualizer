@@ -11,6 +11,7 @@
 #include <A_Star_Node.h>
 #include <stack>
 #include <QTime>
+#include <QTimer>
 #include <queue>
 
 #define STEP_DELAY (200)
