@@ -14,8 +14,6 @@
 #include <QTimer>
 #include <queue>
 
-#define STEP_DELAY (200)
-
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -37,14 +35,20 @@ private slots:
 
     void on_reset_algorithm_clicked();
 
+    void on_speed_valueChanged(int value);
+
+    void on_stop_visualization_clicked();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene scene;
     int square_size = 50;
+    int step_delay = 200;
     void clear_gui();
     void clear_algorithm();
     void clear_data_structures();
     void set_algorithms_steps(int steps);
+    bool stop_btn_clicked{false};
 
     // Visualiaztion-related
     bool target_selected=false; // to avoid selecting multiple targets
@@ -53,17 +57,20 @@ private:
     std::vector<QGraphicsRectItem*> get_neighbours(QGraphicsRectItem* current_square);
     void reconstruct_path(std::unordered_map<QGraphicsRectItem*, QGraphicsRectItem*> came_from_map);
 
-    // BFS
+    // BFS :
     std::queue<QGraphicsRectItem*> bfs_queue;
     int bfs();
 
-    // DFS
+    // DFS :
     std::stack<QGraphicsRectItem*> dfs_stack;
     int dfs();
 
-    // A*
+    // A* :
     int calculate_heuristic(QGraphicsRectItem* current, QGraphicsRectItem* goal);
-    int A_star();
+    int A_star(bool calculate_heuristics);
+
+    // Dijkstra :
+    // same as A* but without the heuristic function
 
 };
 #endif // MAINWINDOW_H

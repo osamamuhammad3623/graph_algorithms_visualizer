@@ -92,6 +92,7 @@ void MainWindow::clear_data_structures()
     ui->steps_label->setText("");
     target_selected=false;
     target_square = nullptr;
+    stop_btn_clicked=false;
 }
 
 void MainWindow::set_algorithms_steps(int steps)
@@ -118,7 +119,10 @@ void MainWindow::on_go_clicked()
         steps=dfs();
 
     }else if  (ui->algorithm->currentText() == "A*"){
-        steps=A_star();
+        steps=A_star(true); // A* with calculating heuristics
+
+    }else if  (ui->algorithm->currentText() == "Dijkstra"){
+        steps=A_star(false); // A* without calculating heuristics
     }
 
     ui->statusbar->showMessage("Completed!");
@@ -134,7 +138,7 @@ int MainWindow::bfs()
     // Store the predecessor of each node for path reconstruction
     std::unordered_map<QGraphicsRectItem*, QGraphicsRectItem*> came_from;
 
-    while (!finish) {
+    while ((!finish) && (!stop_btn_clicked)) {
         // add neighbours
         for (auto nei : get_neighbours(bfs_queue.front())) {
             int row = nei->rect().y() / square_size;
@@ -155,11 +159,13 @@ int MainWindow::bfs()
 
         bfs_queue.pop();
         finish |= bfs_queue.empty();
-        delay(STEP_DELAY);
+        delay(step_delay);
         steps++;
     }
 
-    reconstruct_path(came_from);
+    if(finish){
+        reconstruct_path(came_from);
+    }
     return steps;
 }
 
@@ -173,7 +179,7 @@ int MainWindow::dfs()
     // Store the predecessor of each node for path reconstruction
     std::unordered_map<QGraphicsRectItem*, QGraphicsRectItem*> came_from;
 
-    while (!finish) {
+    while ((!finish) && (!stop_btn_clicked)) {
         QGraphicsRectItem* current = dfs_stack.top();
         map_squares[current->rect().y() / square_size][current->rect().x() / square_size]->setBrush(Qt::lightGray);
         dfs_stack.pop();
@@ -196,15 +202,17 @@ int MainWindow::dfs()
         }
 
         finish |= dfs_stack.empty();
-        delay(STEP_DELAY);
+        delay(step_delay);
         steps++;
     }
 
-    reconstruct_path(came_from);
+    if(finish){
+        reconstruct_path(came_from);
+    }
     return steps;
 }
 
-int MainWindow::A_star()
+int MainWindow::A_star(bool calculate_heuristics)
 {
     // Initialize the start and goal positions
     QGraphicsRectItem* start = map_squares[0][0];  // Example start position
@@ -218,12 +226,17 @@ int MainWindow::A_star()
     std::unordered_map<QGraphicsRectItem*, int> g_cost_map;  // Store g_cost for each node
 
     // Initialize the start node
-    open_list.push(Node{start, 0, calculate_heuristic(start, target_square)});
+    if(calculate_heuristics){
+        open_list.push(Node{start, 0, calculate_heuristic(start, target_square)});
+    }else{
+        open_list.push(Node{start, 0, 0});
+    }
+
     g_cost_map[start] = 0;
 
     bool finish = false;
 
-    while (!open_list.empty() && !finish) {
+    while ((!open_list.empty()) && (!finish) && (!stop_btn_clicked)) {
         // Get the node with the lowest f_cost
         Node current_node = open_list.top();
         open_list.pop();
@@ -250,7 +263,11 @@ int MainWindow::A_star()
             }
 
             int tentative_g_cost = g_cost_map[current] + 1;  // Assuming uniform cost for simplicity
-            int h_cost = calculate_heuristic(nei, target_square);
+
+            int h_cost=0;
+            if(calculate_heuristics){
+                h_cost = calculate_heuristic(nei, target_square);
+            }
 
             // If this path is better, or the neighbor is not in the open list yet
             if (g_cost_map.find(nei) == g_cost_map.end() || tentative_g_cost < g_cost_map[nei]) {
@@ -260,14 +277,15 @@ int MainWindow::A_star()
             }
         }
 
-        delay(STEP_DELAY);
+        delay(step_delay);
         steps++;
     }
 
-    reconstruct_path(came_from);
+    if(finish){
+        reconstruct_path(came_from);
+    }
     return steps;
 }
-
 
 std::vector<QGraphicsRectItem *> MainWindow::get_neighbours(QGraphicsRectItem *current_square)
 {
@@ -275,9 +293,19 @@ std::vector<QGraphicsRectItem *> MainWindow::get_neighbours(QGraphicsRectItem *c
     int col = current_square->rect().x() /square_size;
     std::vector<QGraphicsRectItem *> result{};
 
+    // top right neighbour
+    if((row > 0) && (col < map_squares[0].size() -1)){
+        result.push_back(map_squares[row-1][col+1]);
+    }
+
     // right neighbour
     if(col < map_squares[0].size() -1){
         result.push_back(map_squares[row][col+1]);
+    }
+
+    // bottom right neighbour
+    if((col < map_squares[0].size() -1) && (row < map_squares.size() -1)){
+        result.push_back(map_squares[row+1][col+1]);
     }
 
     // bottom neighbour
@@ -285,9 +313,19 @@ std::vector<QGraphicsRectItem *> MainWindow::get_neighbours(QGraphicsRectItem *c
         result.push_back(map_squares[row+1][col]);
     }
 
+    // bottom left neighbour
+    if((row < map_squares.size() -1) && (col > 0)){
+        result.push_back(map_squares[row+1][col-1]);
+    }
+
     // left neighbour
     if(col > 0){
         result.push_back(map_squares[row][col-1]);
+    }
+
+    // top left neighbour
+    if((col > 0) && (row > 0)){
+        result.push_back(map_squares[row-1][col-1]);
     }
 
     // top neighbour
@@ -322,5 +360,17 @@ int MainWindow::calculate_heuristic(QGraphicsRectItem *current, QGraphicsRectIte
 void MainWindow::on_reset_algorithm_clicked()
 {
     clear_algorithm();
+}
+
+
+void MainWindow::on_speed_valueChanged(int value)
+{
+    step_delay = value;
+}
+
+
+void MainWindow::on_stop_visualization_clicked()
+{
+    stop_btn_clicked=true;
 }
 
