@@ -10,6 +10,7 @@
 - Ability to clear only algorithm visualization and keep obstacles.
 - Ability to stop/cancel visualization while processing (you have to press on "Reset All" or "Reset Algorithm Only" to visualize again)
 - Ability to speed up or slow down visualization speed.
+- Display algorithms steps (to compare time between multiple agorithms).
 
 ## Supported Graph algorithms
 - BFS

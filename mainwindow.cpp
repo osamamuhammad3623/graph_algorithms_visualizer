@@ -149,12 +149,13 @@ int MainWindow::bfs()
                 continue;
             } else if (map_squares[row][col]->brush() == Qt::green) {
                 finish |= true;
+                came_from[nei] = bfs_queue.front();  // Record the predecessor
                 break;
             } else if (map_squares[row][col]->brush() == Qt::red) {
                 map_squares[row][col]->setBrush(Qt::lightGray);
+                came_from[nei] = bfs_queue.front();  // Record the predecessor
                 bfs_queue.push(nei);
             }
-            came_from[nei] = bfs_queue.front();  // Record the predecessor
         }
 
         bfs_queue.pop();
@@ -193,11 +194,12 @@ int MainWindow::dfs()
                 continue;
             } else if (map_squares[row][col]->brush() == Qt::green) {
                 finish = true;
+                came_from[nei] = current;  // Record the predecessor
                 break;
             } else if (map_squares[row][col]->brush() == Qt::red) {
                 dfs_stack.push(nei);
+                came_from[nei] = current;  // Record the predecessor
             }
-            came_from[nei] = current;  // Record the predecessor
         }
 
         finish |= dfs_stack.empty();
