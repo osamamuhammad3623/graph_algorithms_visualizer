@@ -114,6 +114,7 @@ void MainWindow::on_go_clicked()
         set_graph_algorithm(new a_star_graph_algorithm(true));
     }
     if(ui->algorithm->currentText() == "Dijkstra"){
+        // Dijkstra is A* without calculating heuristics
         set_graph_algorithm(new a_star_graph_algorithm(false));
     }
 

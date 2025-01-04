@@ -1,10 +1,5 @@
 #include "bfs_graph_algorithm.h"
 
-bfs_graph_algorithm::bfs_graph_algorithm()
-{
-
-}
-
 int bfs_graph_algorithm::execute()
 {
     bfs_queue.push(map_squares[0][0]);

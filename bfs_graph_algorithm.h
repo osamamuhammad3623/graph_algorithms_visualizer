@@ -7,7 +7,6 @@
 class bfs_graph_algorithm : public graph_algorithm
 {
 public:
-    bfs_graph_algorithm();
     int execute() override;
 
 private:

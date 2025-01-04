@@ -20,6 +20,7 @@ struct Node {
 class a_star_graph_algorithm : public graph_algorithm
 {
 public:
+    // Dijkstra is A* without calculating heuristics, so this class supports both A* & Dijkstra
     a_star_graph_algorithm(bool calculate_heuristics);
     int execute() override;
 

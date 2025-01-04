@@ -5,14 +5,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include <QMouseEvent>
-#include <chrono>
-#include <thread>
 #include <vector>
-#include <A_Star_Node.h>
-#include <stack>
-#include <QTime>
 #include <QTimer>
-#include <queue>
 #include "graph_algorithm.h"
 #include "bfs_graph_algorithm.h"
 #include "dfs_graph_algorithm.h"
