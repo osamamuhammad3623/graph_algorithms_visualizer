@@ -13,8 +13,10 @@
 #include <QTime>
 #include <QTimer>
 #include <queue>
-
-#define SQUARE_SIZE (50)
+#include "graph_algorithm.h"
+#include "bfs_graph_algorithm.h"
+#include "dfs_graph_algorithm.h"
+#include "a_star_graph_algorithm.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -36,40 +38,22 @@ private slots:
     void on_go_clicked();
     void on_reset_algorithm_clicked();
     void on_speed_valueChanged(int value);
-
     void on_stop_visualization_clicked();
 
 private:
     Ui::MainWindow *ui;
     QGraphicsScene scene;
-    int step_delay = 200;
     void clear_gui();
-    void clear_algorithm();
-    void clear_data_structures();
+    void clear_visualized_algorithm();
+    void clear_flags();
     void set_algorithms_steps(int steps);
+    void set_graph_algorithm(graph_algorithm *graph);
+    graph_algorithm *current_graph_algorithm;
 
-    // Visualiaztion-related
     bool target_selected=false; // to avoid selecting multiple targets
     std::vector<std::vector<QGraphicsRectItem*>> map_squares;
     QGraphicsRectItem* target_square;
-    std::vector<QGraphicsRectItem*> get_neighbours(QGraphicsRectItem* current_square);
-    void reconstruct_path(std::unordered_map<QGraphicsRectItem*, QGraphicsRectItem*> came_from_map);
     bool stop_btn_clicked{false};
-
-    // BFS :
-    std::queue<QGraphicsRectItem*> bfs_queue;
-    int bfs();
-
-    // DFS :
-    std::stack<QGraphicsRectItem*> dfs_stack;
-    int dfs();
-
-    // A* :
-    int calculate_heuristic(QGraphicsRectItem* current, QGraphicsRectItem* goal);
-    int A_star(bool calculate_heuristics);
-
-    // Dijkstra :
-    // same as A* but without the heuristic function
 
 };
 #endif // MAINWINDOW_H

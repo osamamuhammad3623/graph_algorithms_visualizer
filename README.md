@@ -11,6 +11,7 @@
 - Ability to stop/cancel visualization while processing (you have to press on "Reset All" or "Reset Algorithm Only" to visualize again)
 - Ability to speed up or slow down visualization speed.
 - Display algorithms steps (to compare time between multiple agorithms).
+- Using Strategy design pattern for different graph algorithms.
 
 ## Supported Graph algorithms
 - BFS
@@ -28,6 +29,3 @@ check YouTube video: https://youtu.be/5fRgi-NXamE?si=FYzD_LM0E5M3XVew
 ## Tools
 - Qt C++ 6.7.0
 
-## To-Do
-- Support more graph algorithms!
-- Use Strategy design pattern for different graph algorithms.

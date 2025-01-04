@@ -10,11 +10,18 @@ TARGET = "Graph Visualizer"
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    a_star_graph_algorithm.cpp \
+    bfs_graph_algorithm.cpp \
+    dfs_graph_algorithm.cpp \
+    graph_algorithm.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
-    A_Star_Node.h \
+    a_star_graph_algorithm.h \
+    bfs_graph_algorithm.h \
+    dfs_graph_algorithm.h \
+    graph_algorithm.h \
     mainwindow.h
 
 FORMS += \

@@ -1,7 +1,8 @@
-#ifndef A_STAR_NODE_H
-#define A_STAR_NODE_H
+#ifndef A_STAR_GRAPH_ALGORITHM_H
+#define A_STAR_GRAPH_ALGORITHM_H
 #include <QGraphicsRectItem>
-
+#include "graph_algorithm.h"
+#include <queue>
 
 struct Node {
     QGraphicsRectItem* item;   // The graphical square (node)
@@ -15,4 +16,17 @@ struct Node {
     }
 };
 
-#endif // A_STAR_NODE_H
+
+class a_star_graph_algorithm : public graph_algorithm
+{
+public:
+    a_star_graph_algorithm(bool calculate_heuristics);
+    int execute() override;
+
+private:    
+    bool calculate_heuristics;
+    int calculate_heuristic(QGraphicsRectItem *current, QGraphicsRectItem *goal);
+
+};
+
+#endif // A_STAR_GRAPH_ALGORITHM_H
