@@ -47,6 +47,7 @@ private:
     bool target_selected=false; // to avoid selecting multiple targets
     std::vector<std::vector<QGraphicsRectItem*>> map_squares;
     QGraphicsRectItem* target_square;
+    int start_row{}, start_col{};
     bool stop_btn_clicked{false};
 
 };

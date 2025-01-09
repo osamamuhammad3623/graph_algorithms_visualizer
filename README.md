@@ -1,9 +1,10 @@
 # Graph Algorithms Visualizer
 
 ## Features
-- Visualize graph algorithms from the start point (0,0) to target point.
+- Visualize graph algorithms from a start point to a target point.
 - Adding obstacles by pressing left click on squares.
 - Adding the target square by pressing right click on a square.
+- Changing start point by clicking middle button (mouse-wheel click).
 - Ability to reset the visualization and start with different algorithm/target/obstacles.
 - Reconstruct the path in blue when target square is found.
 - Ability to search diagonal neighbours.

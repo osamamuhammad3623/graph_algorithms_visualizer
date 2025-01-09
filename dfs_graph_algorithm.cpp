@@ -2,7 +2,7 @@
 
 int dfs_graph_algorithm::execute()
 {
-    dfs_stack.push(map_squares[0][0]);
+    dfs_stack.push(map_squares[start_row][start_col]);
     bool finish = false;
     int steps=0;
 

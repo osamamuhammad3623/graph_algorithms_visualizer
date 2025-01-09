@@ -2,7 +2,7 @@
 
 int bfs_graph_algorithm::execute()
 {
-    bfs_queue.push(map_squares[0][0]);
+    bfs_queue.push(map_squares[start_row][start_col]);
     bool finish = false;
     int steps=0;
 

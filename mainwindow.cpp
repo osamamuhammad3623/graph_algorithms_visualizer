@@ -33,6 +33,10 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
             map_squares[row][col]->setBrush(Qt::green);
             target_selected=true;
             target_square = map_squares[row][col];
+        }else if(event->button() == Qt::MiddleButton){
+            start_row = row;
+            start_col = col;
+            on_start_btn_clicked();
         }
     }
 }
@@ -56,7 +60,7 @@ void MainWindow::on_start_btn_clicked()
         map_squares.push_back(current_row_sqaures);
     }
 
-    map_squares[0][0]->setBrush(Qt::blue);
+    map_squares[start_row][start_col]->setBrush(Qt::blue);
     ui->graphicsView->setScene(&scene);
 }
 
@@ -78,7 +82,7 @@ void MainWindow::clear_visualized_algorithm()
     }
     clear_flags();
     // set start point to blue
-    map_squares[0][0]->setBrush(Qt::blue);
+    map_squares[start_row][start_col]->setBrush(Qt::blue);
 }
 
 void MainWindow::clear_flags()
@@ -120,6 +124,7 @@ void MainWindow::on_go_clicked()
 
     current_graph_algorithm->set_map_squares(map_squares);
     current_graph_algorithm->set_target(target_square);
+    current_graph_algorithm->set_start_point(start_row,start_col);
 
     steps =current_graph_algorithm->execute();
     ui->statusbar->showMessage("Completed!");

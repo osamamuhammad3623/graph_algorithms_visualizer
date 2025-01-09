@@ -8,7 +8,7 @@ a_star_graph_algorithm::a_star_graph_algorithm(bool calculate_heuristics)
 int a_star_graph_algorithm::execute()
 {
     // Initialize the start and goal positions
-    QGraphicsRectItem* start = map_squares[0][0];  // Example start position
+    QGraphicsRectItem* start = map_squares[start_row][start_col];  // Example start position
     int steps=0;
 
     // The std::priority_queue is used to process nodes in the order of their f-cost,

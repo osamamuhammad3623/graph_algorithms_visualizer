@@ -19,12 +19,15 @@ public:
     std::vector<QGraphicsRectItem *> get_neighbours(QGraphicsRectItem *current_square);
     void reconstruct_path(std::unordered_map<QGraphicsRectItem *, QGraphicsRectItem *> came_from_map);
     void delay();
+    void set_start_point(int r, int c);
 
 protected:
     std::vector<std::vector<QGraphicsRectItem*>> map_squares;
     QGraphicsRectItem* target_square;
     int step_delay{200};
     bool stop_flag{false};
+    int start_row{};
+    int start_col{};
 };
 
 #endif // GRAPH_ALGORITHM_H

@@ -72,11 +72,11 @@ std::vector<QGraphicsRectItem *> graph_algorithm::get_neighbours(QGraphicsRectIt
 void graph_algorithm::reconstruct_path(std::unordered_map<QGraphicsRectItem *, QGraphicsRectItem *> came_from_map)
 {
     QGraphicsRectItem* current = target_square;
-    while (current != map_squares[0][0]) {
+    while (current != map_squares[start_row][start_col]) {
         current->setBrush(Qt::blue);  // Mark the path (blue for the final path)
         current = came_from_map[current];
     }
-    map_squares[0][0]->setBrush(Qt::blue);
+    map_squares[start_row][start_col]->setBrush(Qt::blue);
 }
 
 void graph_algorithm::delay()
@@ -86,4 +86,10 @@ void graph_algorithm::delay()
     {
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     }
+}
+
+void graph_algorithm::set_start_point(int r, int c)
+{
+    start_row = r;
+    start_col = c;
 }
