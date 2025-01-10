@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1187</width>
-    <height>772</height>
+    <width>1195</width>
+    <height>849</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,20 +15,21 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="3" column="1">
-     <widget class="QLabel" name="label">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
+    <item row="7" column="1">
+     <widget class="QPushButton" name="stop_visualization">
       <property name="text">
-       <string>Visualization Delay:</string>
+       <string>Stop</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
+    <item row="6" column="1">
+     <widget class="QPushButton" name="reset_algorithm">
+      <property name="text">
+       <string>Reset Algorithm Only</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
      <widget class="QComboBox" name="algorithm">
       <property name="layoutDirection">
        <enum>Qt::LeftToRight</enum>
@@ -55,14 +56,27 @@
       </item>
      </widget>
     </item>
-    <item row="7" column="1">
-     <widget class="QLabel" name="steps_label">
+    <item row="3" column="1">
+     <widget class="QPushButton" name="go">
       <property name="text">
-       <string/>
+       <string>Visualize</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
+    <item row="4" column="1">
+     <widget class="QLabel" name="label">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Visualization Delay:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
      <widget class="QPushButton" name="start_btn">
       <property name="text">
        <string>Reset All</string>
@@ -70,16 +84,6 @@
      </widget>
     </item>
     <item row="5" column="1">
-     <widget class="QPushButton" name="reset_algorithm">
-      <property name="text">
-       <string>Reset Algorithm Only</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0" rowspan="12">
-     <widget class="QGraphicsView" name="graphicsView"/>
-    </item>
-    <item row="4" column="1">
      <widget class="QSlider" name="speed">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -101,17 +105,23 @@
       </property>
      </widget>
     </item>
-    <item row="6" column="1">
-     <widget class="QPushButton" name="stop_visualization">
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>Stop</string>
+       <string>How to use:
+- Left click for marking a block.
+- Middle click for marking a start point.
+- Right click for marking a target point</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
-     <widget class="QPushButton" name="go">
+    <item row="0" column="0" rowspan="16">
+     <widget class="QGraphicsView" name="graphicsView"/>
+    </item>
+    <item row="8" column="1">
+     <widget class="QLabel" name="steps_label">
       <property name="text">
-       <string>Visualize</string>
+       <string/>
       </property>
      </widget>
     </item>
@@ -122,7 +132,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1187</width>
+     <width>1195</width>
      <height>21</height>
     </rect>
    </property>

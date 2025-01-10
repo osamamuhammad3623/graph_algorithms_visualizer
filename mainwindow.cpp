@@ -34,9 +34,11 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
             target_selected=true;
             target_square = map_squares[row][col];
         }else if(event->button() == Qt::MiddleButton){
+            map_squares[start_row][start_col]->setBrush(Qt::red); // unmark previous start point
+            // update start point coordinates
             start_row = row;
             start_col = col;
-            on_start_btn_clicked();
+            map_squares[start_row][start_col]->setBrush(Qt::blue); // mark new start point
         }
     }
 }
